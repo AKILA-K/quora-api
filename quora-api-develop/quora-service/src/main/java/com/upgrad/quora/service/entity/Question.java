@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
         @NamedQuery(name = "getQuestion", query = "select qt from Question qt where qt.uuid=:uuid")
 }
 )
-public class QuestionEntity {
+public class Question {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
