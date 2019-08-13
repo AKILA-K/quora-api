@@ -1,3 +1,5 @@
+
+
 package com.upgrad.quora.service.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
