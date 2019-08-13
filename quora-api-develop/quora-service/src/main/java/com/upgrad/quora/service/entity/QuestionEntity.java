@@ -10,10 +10,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
-/**
- * POJO defined for question table.
- * Defines attributes and relationship for this table.
- */
+
+
+
+
+ //Defines attributes and relationship for this table.
+
 @Entity
 @Table(name = "question", schema = "public")
 @NamedQueries({
