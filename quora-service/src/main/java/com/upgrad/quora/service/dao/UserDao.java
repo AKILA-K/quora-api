@@ -2,6 +2,7 @@ package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import org.springframework.stereotype.Repository;
 
@@ -80,14 +81,31 @@ public class UserDao {
 
     //To check if the user with the access token is signed in / access token exists in the table
     //Returns boolean based on whether the access token is present in the table
-    public boolean hasUserSignedIn(final String accessToken) {
-        UserAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("userByAccessToken", UserAuthTokenEntity.class)
-                .setParameter("accessToken", accessToken).getSingleResult();
-        if(userAuthTokenEntity!=null){
-            return true;
-        } else {
-            return false;
+    public boolean hasUserSignedIn(final String accessToken){
+        try {
+            UserAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("userByAccessToken", UserAuthTokenEntity.class)
+                    .setParameter("accessToken", accessToken).getSingleResult();
+                    return true;
+        } catch (NoResultException exception) {
+           return false;
         }
+
+    }
+
+    public UserAuthTokenEntity isValidActiveAuthToken(final String accessToken) throws AuthorizationFailedException{
+        try {
+            UserAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("userByAccessToken", UserAuthTokenEntity.class)
+                    .setParameter("accessToken", accessToken).getSingleResult();
+            final ZonedDateTime now = ZonedDateTime.now();
+            if(userAuthTokenEntity.getLogoutAt()==null){
+                return userAuthTokenEntity;
+            } else {
+                throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+            }
+        } catch (NoResultException exception) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+
     }
 
     //To check if the user has a valid acces token / access token exists and is valid
@@ -96,7 +114,7 @@ public class UserDao {
         UserAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("userByAccessToken", UserAuthTokenEntity.class)
                 .setParameter("accessToken", accessToken).getSingleResult();
         final ZonedDateTime now = ZonedDateTime.now();
-        if(userAuthTokenEntity.getLogoutAt()==null && userAuthTokenEntity.getExpiresAt().compareTo(now)>=0){
+        if(userAuthTokenEntity.getLogoutAt()==null){
             return true;
         } else {
             return false;

@@ -18,23 +18,18 @@ public class AdminDao {
 
 
     public String deleteUser(final String uuid) throws UserNotFoundException{
-        UserEntity deletedUserEntity = entityManager.createNamedQuery("userByUuid", UserEntity.class)
-                .setParameter("uuid", uuid).getSingleResult();
-
-        String deletedUserUuid = uuid;
-        if(deletedUserEntity!=null) {
+        try {
+            UserEntity deletedUserEntity = entityManager.createNamedQuery("userByUuid", UserEntity.class)
+                    .setParameter("uuid", uuid).getSingleResult();
             Integer deletedUserId = deletedUserEntity.getId();
-            UserAuthTokenEntity deletedUserAuthToken = entityManager.createNamedQuery("userAuthTokenByUserId", UserAuthTokenEntity.class)
-                    .setParameter("user", deletedUserEntity).getSingleResult();
-            entityManager.remove(deletedUserAuthToken);
+            String deletedUserUuid = uuid;
+            //We need to remove only on UserEntity as all other related table entries will be deleted
+            // by @OnDelete annotation function defined for all foreign key fields
             entityManager.remove(deletedUserEntity);
-
             return deletedUserUuid;
-        } else {
-            throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
+        } catch (NullPointerException exc) {
+            return null;
         }
-
-
     }
 
 }
