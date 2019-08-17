@@ -25,7 +25,7 @@ public class QuestionDao {
 
 
 
-    // creats question in database.
+    // persistence entity to creats question in database.
 
     public Question createQuestion(Question question) {
         entityManager.persist(question);
@@ -33,7 +33,7 @@ public class QuestionDao {
     }
 
 
-    //gets  all questions for a specific users uuid.
+    //persistence entity to gets  all questions for a specific users uuid.
 
     public List<Question> getAllQuestionsForUser(String uuId) {
         try {
@@ -47,7 +47,7 @@ public class QuestionDao {
     }
 
 
-    // gets all questions.
+    // persistence entity to get all questions.
 
     public List<Question> getAllQuestions() {
         try {
@@ -59,7 +59,7 @@ public class QuestionDao {
         }
     }
 
-    // gets question for the same owner
+    // persistence entity to get question for the same owner
 
     public Question getQuestion(String questionUuId) {
         try {
@@ -73,7 +73,7 @@ public class QuestionDao {
     }
 
 
-    //edits the question details.
+    //persistence entity to edit the question details.
 
     public Question editQuestion(Question question) {
         entityManager.persist(question);
@@ -81,7 +81,7 @@ public class QuestionDao {
     }
 
 
-    // deleting the question
+    // persistence entity to delete the question
 
     public void deleteQuestion(Question question) {
         entityManager.remove(question);
